@@ -84,6 +84,7 @@ package com.expensetracker.config;
 
 import com.expensetracker.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -97,6 +98,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -118,6 +124,8 @@ public class SecurityConfig {
                         org.springframework.security.config.http.SessionCreationPolicy.STATELESS
                 ));
 
+        http.cors(Customizer.withDefaults()); // This enables CORS for all requests
+
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -133,6 +141,19 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+    @Bean
+    public org.springframework.web.filter.CorsFilter corsFilter() {
+        org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
+        config.setAllowedOrigins(Collections.singletonList("*")); // Allow all origins
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow all HTTP methods
+        config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config); // Apply CORS configuration to all endpoints
+
+        return new org.springframework.web.filter.CorsFilter(source);
+    }
 
 }
 
