@@ -145,7 +145,7 @@ public class SecurityConfig {
     @Bean
     public org.springframework.web.filter.CorsFilter corsFilter() {
         org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
-        config.setAllowedOrigins(Collections.singletonList("*")); // Allow all origins
+        config.setAllowedOrigins(Arrays.asList("*"));// Allow all origins
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow all HTTP methods
         config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
 
